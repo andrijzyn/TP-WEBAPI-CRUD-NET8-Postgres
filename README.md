@@ -1,37 +1,76 @@
-> #### This is repository was created for the purpose of saving my thoughts during my study aspnet to understand all underwater rocks and setting up my configuration well. Of course all code i took from the internet and AI
+## Intro
 
-## For the future:
+This repository stores my notes while learning ASP.NET and setting up my local configuration.  
+All code comes from public sources and AI.
 
-#### ./appsettings.json - must be in Git Secret, it contains a DB login information.
+---
 
-It must contain:
+## For the future
+
+`./appsettings.json` must not be committed to a public repo.  
+It must contain a connection string like:
 
     ConnectionStrings:DefaultConnection
     Host=127.0.0.1;Port=5432;Database=todo_db;Username=todo_user;Password=...
 
 ---
 
-Notes:
+## Notes
 
-1. Setting up:
+`[FromServices]` tells Minimal API to resolve `AppDbContext` from DI, and `TodoItem` comes from the request body.
 
-        dotnet-sdk-8.0 aspnet-runtime-8.0, aspnet-targeting-pack-8.0
-    
+---
 
-        dotnet tool install --global dotnet-ef
+## 1. Environment setup
 
+Required packages:
 
-        sudo -iu postgres
-        initdb -D /var/lib/postgres/data
-        exit
+    dotnet-sdk-8.0
+    aspnet-runtime-8.0
+    aspnet-targeting-pack-8.0
 
-        sudo systemctl start postgresql
-        sudo systemctl enable postgresql
+PostgreSQL init on Arch:
 
+    sudo -iu postgres
+    initdb -D /var/lib/postgres/data
+    exit
 
-        dotnet ef migrations add InitialCreate
+    sudo systemctl start postgresql
+    sudo systemctl enable postgresql
 
-1. First run:
-    
-        dotnet restore 
-        dotnet run
+---
+
+## 2. Database setup
+
+Create user and database:
+
+    sudo -iu postgres
+    psql
+    CREATE USER todo_user WITH PASSWORD 'strong_password';
+    CREATE DATABASE todo_db OWNER todo_user;
+    GRANT ALL PRIVILEGES ON DATABASE todo_db TO todo_user;
+    \q
+    exit
+
+EF Core tools and schema:
+
+    dotnet tool install --global dotnet-ef
+    dotnet ef migrations add InitialCreate
+    dotnet ef database update
+
+---
+
+## 3. HTTPS dev certificate for Kestrel
+
+    dotnet dev-certs https --trust
+
+---
+
+## 4. First run
+
+    dotnet restore
+    dotnet run
+
+Swagger UI to test endpoints:
+
+    https://localhost:7077/swagger/index.html
