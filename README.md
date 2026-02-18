@@ -78,8 +78,8 @@ EF Core tools and schema:
 ## 4. First run
 
     dotnet restore
-    dotnet run
+    dotnet run --launch-profile "https"
 
 Swagger UI to test endpoints:
 
-    https://localhost:7077/swagger/index.html
+    https://localhost:7077/swagger
